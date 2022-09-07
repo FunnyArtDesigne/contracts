@@ -18,9 +18,6 @@ import "@openzeppelin/contracts-upgradeable/utils/introspection/IERC165Upgradeab
 // EIP 2981 royalty standard interface
 import "@openzeppelin/contracts-upgradeable/interfaces/IERC2981Upgradeable.sol";
 
-// Utils
-import "@openzeppelin/contracts-upgradeable/utils/MulticallUpgradeable.sol";
-
 //  ==========  Internal imports    ==========
 
 // Utils
@@ -28,6 +25,7 @@ import "./ReentrancyGuard.sol";
 
 // ERC2771 implementation for gasless transactions.
 import "./ERC2771Context.sol";
+import "./Multicall.sol";
 
 // Helper libraries
 import "../../lib/CurrencyTransferLib.sol";
@@ -57,7 +55,7 @@ contract Marketplace is
     IMarketplace,
     ReentrancyGuard,
     ERC2771Context,
-    MulticallUpgradeable,
+    Multicall,
     PermissionsEnumerable,
     ContractMetadata,
     PlatformFee,
@@ -104,7 +102,7 @@ contract Marketplace is
                             Constructor
     //////////////////////////////////////////////////////////////*/
 
-    constructor(address _nativeTokenWrapper) initializer {
+    constructor(address _nativeTokenWrapper) {
         nativeTokenWrapper = _nativeTokenWrapper;
     }
 

@@ -27,7 +27,7 @@ import "@openzeppelin/contracts-upgradeable/utils/MulticallUpgradeable.sol";
 import "./ReentrancyGuard.sol";
 
 // ERC2771 implementation for gasless transactions.
-import "../../openzeppelin-presets/metatx/ERC2771ContextUpgradeable.sol";
+import "./ERC2771Context.sol";
 
 // Helper libraries
 import "../../lib/CurrencyTransferLib.sol";
@@ -56,7 +56,7 @@ import { MarketplaceStorage } from "./MarketplaceStorage.sol";
 contract Marketplace is
     IMarketplace,
     ReentrancyGuard,
-    ERC2771ContextUpgradeable,
+    ERC2771Context,
     MulticallUpgradeable,
     PermissionsEnumerable,
     ContractMetadata,
@@ -875,26 +875,6 @@ contract Marketplace is
     /*///////////////////////////////////////////////////////////////
                             Miscellaneous
     //////////////////////////////////////////////////////////////*/
-
-    function _msgSender()
-        internal
-        view
-        virtual
-        override(ERC2771ContextUpgradeable)
-        returns (address sender)
-    {
-        return ERC2771ContextUpgradeable._msgSender();
-    }
-
-    function _msgData()
-        internal
-        view
-        virtual
-        override(ERC2771ContextUpgradeable)
-        returns (bytes calldata)
-    {
-        return ERC2771ContextUpgradeable._msgData();
-    }
 
     /// @dev Returns whether contract metadata can be set in the given execution context.
     function _canSetContractURI() internal view virtual override returns (bool) {

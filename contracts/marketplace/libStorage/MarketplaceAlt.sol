@@ -25,17 +25,17 @@ import "@openzeppelin/contracts-upgradeable/utils/MulticallUpgradeable.sol";
 //  ==========  Internal imports    ==========
 
 // ERC2771 implementation for gasless transactions.
-import "../openzeppelin-presets/metatx/ERC2771ContextUpgradeable.sol";
+import "../../openzeppelin-presets/metatx/ERC2771ContextUpgradeable.sol";
 
 // Helper libraries
-import "../lib/CurrencyTransferLib.sol";
-import "../lib/FeeType.sol";
+import "../../lib/CurrencyTransferLib.sol";
+import "../../lib/FeeType.sol";
 
 //  ==========  Extensions    ==========
 
-import "../extension/PermissionsEnumerable.sol";
-import "../extension/ContractMetadata.sol";
-import "../extension/PlatformFee.sol";
+import "../../extension/PermissionsEnumerable.sol";
+import "../../extension/ContractMetadata.sol";
+import "../../extension/PlatformFee.sol";
 
 //  ==========  Interface    ==========
 
@@ -48,11 +48,10 @@ import "../extension/PlatformFee.sol";
  *      [TODO] Move initialization logic to Entrypoint
  */
 
-import { IMarketplace } from "../interfaces/marketplace/IMarketplaceAlt.sol";
+import { IMarketplace } from "./IMarketplaceAlt.sol";
 import { MarketplaceStorage } from "./MarketplaceStorage.sol";
 
 contract Marketplace is
-    Initializable,
     IMarketplace,
     ReentrancyGuardUpgradeable,
     ERC2771ContextUpgradeable,
@@ -100,37 +99,11 @@ contract Marketplace is
     }
 
     /*///////////////////////////////////////////////////////////////
-                    Constructor + initializer logic
+                            Constructor
     //////////////////////////////////////////////////////////////*/
 
     constructor(address _nativeTokenWrapper) initializer {
         nativeTokenWrapper = _nativeTokenWrapper;
-    }
-
-    /// @dev Initiliazes the contract, like a constructor.
-    function initialize(
-        address _defaultAdmin,
-        string memory _contractURI,
-        address[] memory _trustedForwarders,
-        address _platformFeeRecipient,
-        uint256 _platformFeeBps
-    ) external initializer {
-        // Initialize inherited contracts, most base-like -> most derived.
-        __ReentrancyGuard_init();
-        __ERC2771Context_init(_trustedForwarders);
-
-        // Initialize this contract's state.
-        MarketplaceStorage.Data storage data = MarketplaceStorage.marketplaceStorage();
-
-        data.timeBuffer = 15 minutes;
-        data.bidBufferBps = 500;
-
-        _setupContractURI(_contractURI);
-        _setupPlatformFeeInfo(_platformFeeRecipient, _platformFeeBps);
-
-        _setupRole(DEFAULT_ADMIN_ROLE, _defaultAdmin);
-        _setupRole(LISTER_ROLE, address(0));
-        _setupRole(ASSET_ROLE, address(0));
     }
 
     /*///////////////////////////////////////////////////////////////

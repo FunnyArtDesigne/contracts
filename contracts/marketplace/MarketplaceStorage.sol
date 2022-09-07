@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: Apache-2.0
 pragma solidity ^0.8.0;
 
-import { IMarketplace } from "../interfaces/marketplace/IMarketplace.sol";
+import { IMarketplace } from "../interfaces/marketplace/IMarketplaceAlt.sol";
 
 library MarketplaceStorage{
     bytes32 constant MARKETPLACE_STORAGE_POSITION = keccak256("marketplace.storage");

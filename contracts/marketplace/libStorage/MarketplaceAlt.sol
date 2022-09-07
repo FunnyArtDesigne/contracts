@@ -34,7 +34,7 @@ import "../../lib/FeeType.sol";
 //  ==========  Extensions    ==========
 
 import "../../extension/PermissionsEnumerable.sol";
-import "../../extension/ContractMetadata.sol";
+import "./ContractMetadata.sol";
 import "../../extension/PlatformFee.sol";
 
 //  ==========  Interface    ==========

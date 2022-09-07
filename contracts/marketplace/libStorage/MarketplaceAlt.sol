@@ -22,10 +22,10 @@ import "@openzeppelin/contracts-upgradeable/interfaces/IERC2981Upgradeable.sol";
 
 // Utils
 import "./ReentrancyGuard.sol";
+import "./Multicall.sol";
 
 // ERC2771 implementation for gasless transactions.
 import "./ERC2771Context.sol";
-import "./Multicall.sol";
 
 // Helper libraries
 import "../../lib/CurrencyTransferLib.sol";
@@ -33,23 +33,23 @@ import "../../lib/FeeType.sol";
 
 //  ==========  Extensions    ==========
 
-import "../../extension/PermissionsEnumerable.sol";
 import "./ContractMetadata.sol";
-import "../../extension/PlatformFee.sol";
+import "./PlatformFee.sol";
+import "../../extension/PermissionsEnumerable.sol";
 
 //  ==========  Interface    ==========
+
+import { IMarketplace } from "./IMarketplaceAlt.sol";
+import { MarketplaceStorage } from "./MarketplaceStorage.sol";
 
 /**
  *  Checklist
  *      [DONE] re-organize main `Marketplace` state in library storage pattern.
- *      [TODO] re-organize state of each inherited contract in library storage pattern.
+ *      [DONE] re-organize state of each inherited contract in library storage pattern.
  *      [TODO] get contract to compile.
  *      [TODO] Optimize storage invocations.
  *      [TODO] Move initialization logic to Entrypoint
  */
-
-import { IMarketplace } from "./IMarketplaceAlt.sol";
-import { MarketplaceStorage } from "./MarketplaceStorage.sol";
 
 contract Marketplace is
     IMarketplace,

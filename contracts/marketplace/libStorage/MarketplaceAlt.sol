@@ -19,10 +19,12 @@ import "@openzeppelin/contracts-upgradeable/utils/introspection/IERC165Upgradeab
 import "@openzeppelin/contracts-upgradeable/interfaces/IERC2981Upgradeable.sol";
 
 // Utils
-import "@openzeppelin/contracts-upgradeable/security/ReentrancyGuardUpgradeable.sol";
 import "@openzeppelin/contracts-upgradeable/utils/MulticallUpgradeable.sol";
 
 //  ==========  Internal imports    ==========
+
+// Utils
+import "./ReentrancyGuard.sol";
 
 // ERC2771 implementation for gasless transactions.
 import "../../openzeppelin-presets/metatx/ERC2771ContextUpgradeable.sol";
@@ -53,7 +55,7 @@ import { MarketplaceStorage } from "./MarketplaceStorage.sol";
 
 contract Marketplace is
     IMarketplace,
-    ReentrancyGuardUpgradeable,
+    ReentrancyGuard,
     ERC2771ContextUpgradeable,
     MulticallUpgradeable,
     PermissionsEnumerable,

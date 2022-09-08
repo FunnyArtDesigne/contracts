@@ -39,20 +39,11 @@ import "../../extension/PermissionsEnumerable.sol";
 
 //  ==========  Interface    ==========
 
-import { IMarketplace } from "./IMarketplaceAlt.sol";
+import { IMarketplaceAlt } from "./IMarketplaceAlt.sol";
 import { MarketplaceStorage } from "./MarketplaceStorage.sol";
 
-/**
- *  Checklist
- *      [DONE] re-organize main `Marketplace` state in library storage pattern.
- *      [DONE] re-organize state of each inherited contract in library storage pattern.
- *      [DONE] get contract to compile.
- *      [TODO] Optimize storage invocations.
- *      [TODO] Move initialization logic to Entrypoint
- */
-
 contract MarketplaceAlt is
-    IMarketplace,
+    IMarketplaceAlt,
     ReentrancyGuard,
     ERC2771Context,
     Multicall,
@@ -70,9 +61,9 @@ contract MarketplaceAlt is
     uint256 private constant VERSION = 2;
 
     /// @dev Only lister role holders can create listings, when listings are restricted by lister address.
-    bytes32 private constant LISTER_ROLE = keccak256("LISTER_ROLE");
+    bytes32 internal constant LISTER_ROLE = keccak256("LISTER_ROLE");
     /// @dev Only assets from NFT contracts with asset role can be listed, when listings are restricted by asset address.
-    bytes32 private constant ASSET_ROLE = keccak256("ASSET_ROLE");
+    bytes32 internal constant ASSET_ROLE = keccak256("ASSET_ROLE");
 
     /// @dev The address of the native token wrapper contract.
     address private immutable nativeTokenWrapper;
@@ -166,6 +157,40 @@ contract MarketplaceAlt is
         return
             interfaceId == type(IERC1155ReceiverUpgradeable).interfaceId ||
             interfaceId == type(IERC721ReceiverUpgradeable).interfaceId;
+    }
+
+    /*///////////////////////////////////////////////////////////////
+                                Getters
+    //////////////////////////////////////////////////////////////*/
+
+    function totalListings() external view returns (uint256) {
+        MarketplaceStorage.Data storage data = MarketplaceStorage.marketplaceStorage();
+        return data.totalListings;
+    }
+
+    function timeBuffer() external view returns (uint128) {
+        MarketplaceStorage.Data storage data = MarketplaceStorage.marketplaceStorage();
+        return data.timeBuffer;
+    }
+
+    function bidBufferBps() external view returns (uint128) {
+        MarketplaceStorage.Data storage data = MarketplaceStorage.marketplaceStorage();
+        return data.bidBufferBps;
+    }
+
+    function listings(uint256 _id) external view returns (Listing memory) {
+        MarketplaceStorage.Data storage data = MarketplaceStorage.marketplaceStorage();
+        return data.listings[_id];
+    }
+
+    function offers(uint256 _id, address _listingCreator) external view returns (Offer memory) {
+        MarketplaceStorage.Data storage data = MarketplaceStorage.marketplaceStorage();
+        return data.offers[_id][_listingCreator];
+    }
+
+    function winningBid(uint256 _id) external view returns (Offer memory) {
+        MarketplaceStorage.Data storage data = MarketplaceStorage.marketplaceStorage();
+        return data.winningBid[_id];
     }
 
     /*///////////////////////////////////////////////////////////////

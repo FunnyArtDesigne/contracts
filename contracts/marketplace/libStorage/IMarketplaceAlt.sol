@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: Apache-2.0
 pragma solidity ^0.8.11;
 
-interface IMarketplace {
+interface IMarketplaceAlt {
     /// @notice Type of the tokens that can be listed for sale.
     enum TokenType {
         ERC1155,

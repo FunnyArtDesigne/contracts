@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: Apache-2.0
 pragma solidity ^0.8.0;
 
-import { IMarketplace } from "./IMarketplaceAlt.sol";
+import { IMarketplaceAlt } from "./IMarketplaceAlt.sol";
 
 library MarketplaceStorage{
     bytes32 constant MARKETPLACE_STORAGE_POSITION = keccak256("marketplace.storage");
@@ -11,9 +11,9 @@ library MarketplaceStorage{
         uint128 timeBuffer;
         uint128 bidBufferBps;
 
-        mapping(uint256 => IMarketplace.Listing) listings;
-        mapping(uint256 => mapping(address => IMarketplace.Offer)) offers;
-        mapping(uint256 => IMarketplace.Offer) winningBid;
+        mapping(uint256 => IMarketplaceAlt.Listing) listings;
+        mapping(uint256 => mapping(address => IMarketplaceAlt.Offer)) offers;
+        mapping(uint256 => IMarketplaceAlt.Offer) winningBid;
     }
 
     function marketplaceStorage() internal pure returns (Data storage marketplaceData) {

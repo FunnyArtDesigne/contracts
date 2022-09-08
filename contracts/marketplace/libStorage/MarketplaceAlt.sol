@@ -46,12 +46,12 @@ import { MarketplaceStorage } from "./MarketplaceStorage.sol";
  *  Checklist
  *      [DONE] re-organize main `Marketplace` state in library storage pattern.
  *      [DONE] re-organize state of each inherited contract in library storage pattern.
- *      [TODO] get contract to compile.
+ *      [DONE] get contract to compile.
  *      [TODO] Optimize storage invocations.
  *      [TODO] Move initialization logic to Entrypoint
  */
 
-contract Marketplace is
+contract MarketplaceAlt is
     IMarketplace,
     ReentrancyGuard,
     ERC2771Context,
@@ -241,6 +241,7 @@ contract Marketplace is
         uint256 _secondsUntilEndTime
     ) external override onlyListingCreator(_listingId) {
 
+        uint256 id = _listingId;
         MarketplaceStorage.Data storage data = MarketplaceStorage.marketplaceStorage();
 
         Listing memory targetListing = data.listings[_listingId];
@@ -262,8 +263,11 @@ contract Marketplace is
         }
 
         uint256 newStartTime = _startTime == 0 ? targetListing.startTime : _startTime;
-        data.listings[_listingId] = Listing({
-            listingId: _listingId,
+
+        _updateListingTokenCheck(targetListing, isAuction, safeNewQuantity);
+
+        data.listings[id] = Listing({
+            listingId: id,
             tokenOwner: _msgSender(),
             assetContract: targetListing.assetContract,
             tokenId: targetListing.tokenId,
@@ -277,6 +281,14 @@ contract Marketplace is
             listingType: targetListing.listingType
         });
 
+        emit ListingUpdated(id, targetListing.tokenOwner);
+    }
+
+    function _updateListingTokenCheck(
+        Listing memory targetListing,
+        bool isAuction,
+        uint256 safeNewQuantity
+    ) internal {
         // Must validate ownership and approval of the new quantity of tokens for diret listing.
         if (targetListing.quantity != safeNewQuantity) {
             // Transfer all escrowed tokens back to the lister, to be reflected in the lister's
@@ -298,8 +310,6 @@ contract Marketplace is
                 transferListingTokens(targetListing.tokenOwner, address(this), safeNewQuantity, targetListing);
             }
         }
-
-        emit ListingUpdated(_listingId, targetListing.tokenOwner);
     }
 
     /// @dev Lets a direct listing creator cancel their listing.

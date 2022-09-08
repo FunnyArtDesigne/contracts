@@ -51,7 +51,7 @@ import { MarketplaceStorage } from "./MarketplaceStorage.sol";
  *      [TODO] Move initialization logic to Entrypoint
  */
 
-contract Marketplace is
+contract MarketplaceAlt is
     IMarketplace,
     ReentrancyGuard,
     ERC2771Context,
@@ -241,6 +241,7 @@ contract Marketplace is
         uint256 _secondsUntilEndTime
     ) external override onlyListingCreator(_listingId) {
 
+        uint256 id = _listingId;
         MarketplaceStorage.Data storage data = MarketplaceStorage.marketplaceStorage();
 
         Listing memory targetListing = data.listings[_listingId];
@@ -262,8 +263,11 @@ contract Marketplace is
         }
 
         uint256 newStartTime = _startTime == 0 ? targetListing.startTime : _startTime;
-        data.listings[_listingId] = Listing({
-            listingId: _listingId,
+
+        _updateListingTokenCheck(targetListing, isAuction, safeNewQuantity);
+
+        data.listings[id] = Listing({
+            listingId: id,
             tokenOwner: _msgSender(),
             assetContract: targetListing.assetContract,
             tokenId: targetListing.tokenId,
@@ -277,6 +281,14 @@ contract Marketplace is
             listingType: targetListing.listingType
         });
 
+        emit ListingUpdated(id, targetListing.tokenOwner);
+    }
+
+    function _updateListingTokenCheck(
+        Listing memory targetListing,
+        bool isAuction,
+        uint256 safeNewQuantity
+    ) internal {
         // Must validate ownership and approval of the new quantity of tokens for diret listing.
         if (targetListing.quantity != safeNewQuantity) {
             // Transfer all escrowed tokens back to the lister, to be reflected in the lister's
@@ -298,8 +310,6 @@ contract Marketplace is
                 transferListingTokens(targetListing.tokenOwner, address(this), safeNewQuantity, targetListing);
             }
         }
-
-        emit ListingUpdated(_listingId, targetListing.tokenOwner);
     }
 
     /// @dev Lets a direct listing creator cancel their listing.
